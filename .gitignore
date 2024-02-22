@@ -1,2 +1,3 @@
 venv
+**/marketplace/__pycache__
 marketplace/__pycache__/
