@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block title %} DIGITAL MARKET - Управление отзывами {% endblock %}
+
+{% block balance %} <span style="color: white;">Баланс: {{ profile.balance }}</span>{% endblock %}
+
+    {% block img %}
+
+    {% if profile.profile_picture %}
+    <img src="{{ profile.profile_picture.url }}" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+    {% else %}
+    <img src="https://i.pinimg.com/originals/f4/1c/aa/f41caad9981cc88b4016984c83b3c6a1.png" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+    {% endif %}
+
+    {% endblock %}
+
+{% block content %}
+<h1> Управление отзывами</h1>
+<form method="get">
+    <label for="keyword">Поиск: </label>
+    <input type="text" name="keyword" id="keyword" value="{{ keyword }}">
+    <button type="submit">Искать</button>
+</form>
+<ul>
+    {% for review in reviews %}
+    <li>
+        <p><strong>Устройство: {{ review.device.name }}</strong></p>
+        <p><strong>Автор: {{ review.author.username }}</strong></p>
+        <p><strong>Рейтинг: {{ review.rating }}</strong></p>
+        <p> {{ review.content }}</p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="delete_review_id" value="{{ review.id }}">
+            <button type="submit">Удалить</button>
+        </form>
+    </li>
+    {% empty %}
+    <li>Пока нет отзывов.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

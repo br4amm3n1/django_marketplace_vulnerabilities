@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block title %} DIGITAL MARKET - Мониторинг покупок {% endblock %}
+
+{% block balance %} <span style="color: white;">Баланс: {{ profile.balance }}</span>{% endblock %}
+
+    {% block img %}
+
+    {% if profile.profile_picture %}
+    <img src="{{ profile.profile_picture.url }}" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+    {% else %}
+    <img src="https://i.pinimg.com/originals/f4/1c/aa/f41caad9981cc88b4016984c83b3c6a1.png" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+    {% endif %}
+
+    {% endblock %}
+
+{% block content %}
+<h1> Мониторинг покупок</h1>
+{% for purchase in purchases %}
+<div style="border: 2px solid #5a538c; border-radius: 15px; padding: 10px; margin-bottom: 10px;">
+    <div style="border-bottom: 1px solid #5a538c; height: 25px;">
+        <p><strong>Пользователь: {{ purchase.user }}</strong></p>
+    </div>
+
+    <p><strong>Адрес доставки: </strong> {{ purchase.delivery_address }}</p>
+    <p><strong>Время: </strong> {{ purchase.timestamp }}</p>
+    <p><strong>Стоимость: </strong> {{ purchase.amount }}</p>
+    <p><strong>Список устройств:</strong></p>
+    {% for device in purchase.devices %}
+        {% for name, quantity in device.items %}
+            <p><strong>{{ forloop.parentloop.counter }}.</strong> {{ name }} в количестве {{ quantity }}</p>
+        {% endfor %}
+    {% endfor %}
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block title %} {{ device_name }} - Отзывы об устройстве {% endblock %}
+<body>
+    {% block balance %}
+    <span style="color: white;">
+        Баланс: {{ profile.balance }}
+    </span>
+    {% endblock %}
+
+    {% block img %}
+    {% if profile.profile_picture %}
+        <img src="{{ profile.profile_picture.url }}" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+        {% else %}
+        <img src="https://i.pinimg.com/originals/f4/1c/aa/f41caad9981cc88b4016984c83b3c6a1.png" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+    {% endif %}
+    {% endblock %}
+
+    {% block content %}
+    <h1>{{ device_name }}</h1>
+
+    <h2>Отзывы о {{ device_name }}</h2>
+    <ul>
+        {% for review in reviews %}
+        <li>
+            <p><strong>Автор: {{ review.author.username }}</strong></p>
+            <p><strong>Рейтинг: {{ review.rating }}</strong></p>
+            <p> {{ review.content|safe }}</p>
+        </li>
+        {% empty %}
+        <li>Пока нет отзывов.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'device_detail' device_id=device_id %}" class="btn btn-dark"> Назад к устройству </a>
+    {% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+</body>

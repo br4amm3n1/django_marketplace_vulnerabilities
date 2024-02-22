@@ -1,0 +1,67 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <link rel="stylesheet" href="{% static 'css/styles_accounts.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
+</head>
+<body>
+    <div class="reg-container">
+        {% for user in user_data %}
+            <h5>{{ user }}</h5>
+        {% endfor %}
+        <form method="post" style="display: flex; align-items: center; flex-direction: column;">
+            {% csrf_token %}
+            <h2>LOGIN</h2>
+            <div class="form-group">
+                <label for="id_username" style="opacity: 0.4; font-size: 0.9rem;">Username:</label>
+                <input type="text" name="username" id="id_username" required>
+            </div>
+            <div class="form-group">
+                <label for="id_password" style="opacity: 0.4; font-size: 0.9rem;">Password:</label>
+                <div class="password-form">
+                    <input type="password" name="password" id="id_password" required>
+                    <i id="open-eye" class="bi bi-eye" style="display: none;"></i>
+                    <i id="closed-eye" class="bi bi-eye-slash"></i>
+                </div>
+            </div>
+            <button id="signin" type="submit" style="margin-top: 16px;">Sign in</button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+        })
+        $(document).ready(function() {
+            $('#open-eye').click(function() {
+                var passwordInput = $('#id_password');
+                const closedEyeIcon = $('#closed-eye')[0];
+                const openEyeIcon = $('#open-eye')[0];
+
+                passwordInput.attr('type', 'password');
+                closedEyeIcon.style.display = "block";
+                openEyeIcon.style.display = "none";
+            });
+
+            $('#closed-eye').click(function() {
+                var passwordInput = $('#id_password');
+                const closedEyeIcon = $('#closed-eye')[0];
+                const openEyeIcon = $('#open-eye')[0];
+
+                passwordInput.attr('type', 'text');
+                closedEyeIcon.style.display = "none";
+                openEyeIcon.style.display = "block";
+            });
+            });
+    </script>
+
+</body>
+</html>

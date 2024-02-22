@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+
+    {% block title %} DIGITAL MARKET - Корзина {% endblock %}
+
+    {% block balance %}
+    <span style="color: white;">Баланс: {{ profile.balance }}</span>
+    {% endblock %}
+
+    {% block img %}
+
+    {% if profile.profile_picture %}
+    <img src="{{ profile.profile_picture.url }}" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+    {% else %}
+    <img src="https://i.pinimg.com/originals/f4/1c/aa/f41caad9981cc88b4016984c83b3c6a1.png" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+    {% endif %}
+    {% endblock %}
+
+{% block content %}
+    <h1>Корзина</h1>
+    <ul style="max-width: 600px;">
+        {% for item in cart_items %}
+            <li style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <a href="{% url 'device_detail' device_id=item.device.id %}">{{ item.device.name }}</a>
+                    Количество: {{ item.quantity }} - Цена: {{ item.device.price }} руб.
+                </div>
+                <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-remove">Удалить</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Итоговая сумма: {{ total_price }} руб.</p>
+    {% if cart_items %}
+    <a href="{% url 'make_purchase' %}">
+        <button class="btn btn-success">
+            Оформить заказ
+        </button>
+    </a>
+    {% endif %}
+{% endblock %}

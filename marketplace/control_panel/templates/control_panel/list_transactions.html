@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block title %} DIGITAL MARKET - Проверка транзакций {% endblock %}
+
+{% block balance %} <span style="color: white;">Баланс: {{ profile.balance }}</span>{% endblock %}
+
+    {% block img %}
+
+    {% if profile.profile_picture %}
+    <img src="{{ profile.profile_picture.url }}" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+    {% else %}
+    <img src="https://i.pinimg.com/originals/f4/1c/aa/f41caad9981cc88b4016984c83b3c6a1.png" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+    {% endif %}
+
+    {% endblock %}
+
+{% block content %}
+<h1> Проверка транзакций </h1>
+<form method="get">
+    <label for="keyword">Поиск: </label>
+    <input type="text" name="keyword" id="keyword" value="{{ keyword }}">
+    <button type="submit">Искать</button>
+</form>
+{% for transaction in transactions %}
+<div style="border: 2px solid #5a538c; border-radius: 15px; padding: 10px; margin-bottom: 10px;">
+    <div style="border-bottom: 1px solid #5a538c; height: 25px;">
+        <p><strong>Пользователь: {{ transaction.user.username }}</strong></p>
+    </div>
+
+    <p><strong>Номер карты: </strong> {{ transaction.card_number }}</p>
+    <p><strong>Срок действия: </strong> {{ transaction.expiry_date }}</p>
+    <p><strong>Держатель карты: </strong> {{ transaction.card_holder }}</p>
+    <p><strong>Сумма транзакции:</strong> {{ transaction.amount }}</p>
+    <p><strong>Время выполнения:</strong> {{ transaction.timestamp }}</p>
+
+</div>
+{% endfor %}
+{% endblock %}

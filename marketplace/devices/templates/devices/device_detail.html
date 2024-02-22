@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+
+{% block title %} {{ device.name }} - Детали устройства {% endblock %}
+
+{% block balance %}
+<span style="color: white;">Баланс: {{ profile.balance }}</span>
+{% endblock %}
+
+{% block img %}
+{% if profile.profile_picture %}
+<img src="{{ profile.profile_picture.url }}" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+{% else %}
+<img src="https://i.pinimg.com/originals/f4/1c/aa/f41caad9981cc88b4016984c83b3c6a1.png" class="img-fluid rounded-circle" style="width: 50px; height: auto;">    {% endif %}
+{% endblock %}
+
+
+{% block content %}
+<h1>{{ device.name }}</h1>
+<p><strong>Описание:</strong> {{ device.description }}</p>
+<p><strong>Цена:</strong> {{ device.price }} руб.</p>
+<p><strong>Категория:</strong> {{ device.category.name }}</p>
+<a href="{% url 'device_showcase' %}" class="btn btn-dark">На главную страницу</a>
+
+<a href="{% url 'device_reviews' device_id=device.id %}" class="btn btn-dark">Отзывы об устройстве</a>
+
+{% if user.is_authenticated %}
+<a href="{% url 'create_review' device_id=device.id %}">
+    <button id="show-review-form" class="btn btn-dark">Оставить отзыв</button>
+</a>
+
+<div id="review-form">
+    <h2>Отзыв</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ review_form.as_p }}
+        <button type="submit" id="submit-review">Отправить отзыв</button>
+    </form>
+</div>
+
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+   var showReviewButton = document.getElementById("show-review-form");
+   var reviewForm = document.getElementById("review-form");
+
+   if (window.location.href.includes("create_review")) {
+        reviewForm.style.display = "block"
+   }
+   else {
+        reviewForm.style.display = "none"
+   }
+});
+</script>
+
+{% endif %}
+
+{% endblock %}

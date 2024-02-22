@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+    {% block title %} DIGITAL MARKET - Оформление заказа {% endblock %}
+
+    {% block balance %}
+    <span style="color: white;">Баланс: {{ profile.balance }}</span>
+    {% endblock %}
+
+    {% block img %}
+
+    {% if profile.profile_picture %}
+    <img src="{{ profile.profile_picture.url }}" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+    {% else %}
+    <img src="https://i.pinimg.com/originals/f4/1c/aa/f41caad9981cc88b4016984c83b3c6a1.png" class="img-fluid rounded-circle" style="width: 50px; height: auto;">
+    {% endif %}
+    {% endblock %}
+
+{% block content %}
+    <h1>Оформление заказа</h1>
+    <h4>Содержимое корзины</h4>
+    <ul style="max-width: 600px;">
+        {% for item in cart_items %}
+            <li style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <a href="{% url 'device_detail' device_id=item.device.id %}">{{ item.device.name }}</a>
+                    Количество: {{ item.quantity }} - Цена: {{ item.device.price }} руб.
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ purchase_form.delivery_address }}
+        <ul id="address-suggestions"></ul>
+        <p> Итоговая сумма: {{ total_price }} р.</p>
+        <p style="opacity: 0.5;">После совершения покупки с вашего внутреннего баланса будут списаны средства в количестве, указанном выше. </p>
+        <button class="btn btn-success">Совершить покупку</button>
+        <div>
+            {% if warning_message %}
+                <strong> {{ warning_message }} </strong>
+            {% endif %}
+        </div>
+    </form>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$(document).ready(function() {
+    $('#id_delivery_address').autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: '{% url "dadata_autocomplete" %}',
+                data: {'query': request.term},
+                dataType: 'json',
+                success: function(data) {
+                    response($.map(data.suggestions, function(item) {
+                        return {
+                            label: item.value,
+                            value: item.value,
+                            data: item
+                        };
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function(event, ui) {
+            console.log(ui.item.data);
+        }
+    });
+});
+</script>
+
+{% endblock %}

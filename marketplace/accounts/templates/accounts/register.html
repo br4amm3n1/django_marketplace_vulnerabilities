@@ -1,0 +1,58 @@
+{% load static %}
+{% load bootstrap4 %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles_accounts.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Регистрация</title>
+</head>
+<body>
+    <div class="reg-container">
+    <div>
+        <div>
+            <h2 class="text-center">REGISTRATION</h2>
+            <h5 class="text-center">DIGITAL MARKET</h5>
+            <form method="post" class="form-group-register">
+                {% csrf_token %}
+                <label>Username:</label>
+                {{ user_form.username }}
+                <label>Password:</label>
+                {{ user_form.password1 }}
+                <label>Confirm password:</label>
+                {{ user_form.password2 }}
+                <label>Aren't you robot? </label>
+                {{ user_form.recaptcha }}
+
+            {% if user_form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for error in user_form.errors.username %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                        {% for error in user_form.errors.password1 %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                        {% for error in user_form.errors.password2 %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                        {% if user_form.errors.recaptcha %}
+                        <li style="list-style-type: none;">Подтвердите, что вы не робот.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</body>
+</html>

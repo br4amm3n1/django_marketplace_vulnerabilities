@@ -1,0 +1,180 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIGITAL MARKET - User Profile</title>
+    <link rel="stylesheet" href="{% static 'css/styles_accounts.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<a href="{% url 'device_showcase' %}" class="btn-back"><button class="btn btn-secondary"> Назад </button></a>
+<body>
+<div class="profile-form">
+    <div class="container mt-5">
+        <h2 style="text-align: center;"> Мой профиль </h2>
+    <div class="row">
+        <div class="col-md-4">
+            {% if user_profile.profile_picture %}
+                <img src="{{ user_profile.profile_picture.url }}" alt="{{ user_profile.user.username }} Profile" class="img-fluid rounded-circle">
+            {% else %}
+                <img src="https://i.pinimg.com/originals/f4/1c/aa/f41caad9981cc88b4016984c83b3c6a1.png" class="img-fluid rounded-circle" style="width: 100%; height: auto;">
+            {% endif %}
+            <form method="POST" enctype="multipart/form-data" action="{% url 'upload_profile_picture' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="profile_picture">Загрузить фотографию</label>
+                    <input type="file" name="profile_picture" id="profile_picture" class="form-control-file">
+                </div>
+                <button type="submit" class="btn btn-primary">Загрузить</button>
+            </form>
+        </div>
+        <div class="col-md-8 save-form">
+            <h2>{{ user_profile.user.username }}</h2>
+            <div class="balance">
+                <h5 style="margin-inline-end: 20px;">Баланс: {{ user_profile.balance }} </h5>
+                <button id="payment-btn" class="btn btn-primary btn-top-up-balance">
+                    <a href="{% url 'process_payment' %}" style="color: white; text-decoration: none;"> Пополнить баланс</a>
+                </button>
+            </div>
+
+                <div class="user-info">
+                    <label><strong>Имя:</strong>
+                    {% if user_info.first_name %}
+                        <span id="first-name">{{ user_info.first_name }}</span>
+                    {% else %}
+                        <span id="empty-first-name" style="opacity: 0.5;"> не заполнено </span>
+                    {% endif %}
+                    </label>
+                </div>
+
+                <div class="user-info">
+                    <label>
+                        <strong>Фамилия:</strong>
+                        {% if user_info.last_name %}
+                            <span id="last-name">{{ user_info.last_name }}</span>
+                        {% else %}
+                            <span id="empty-last-name" style="opacity: 0.5;"> не заполнено</span>
+                        {% endif %}
+                    </label>
+                </div>
+
+                <div class="user-info">
+                    <label>
+                        <strong>Почта:</strong>
+                            {% if user_info.email %}
+                            <span id="email">{{ user_info.email }}</span>
+<!--                    <input type="text" class="form-control" id="edit-email-input" value="{{ user_form.user.email }}" style="display: none;">-->
+                        {% else %}
+                            <span id="empty-email" style="opacity: 0.5;"> не заполнено</span>
+                        {% endif %}
+                    </label>
+                </div>
+
+            <div class="user-info">
+                <label>
+                    <strong>О себе:</strong>
+                        {% if user_profile.bio %}
+                            <span id="bio">{{ user_profile.bio }}</span>
+                        <!---->
+                        {% else %}
+                            <span id="empty-bio" style="opacity: 0.5;"> не заполнено</span>
+                        {% endif %}
+                </label>
+            </div>
+
+            <a data-toggle="modal" data-target="#editProfileModal">
+                <button class="btn btn-primary"> Редактировать</button>
+            </a>
+
+            <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editProfileModalLabel">Редактировать информацию</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {{ user_edit_form.as_p }}
+                                <div>
+                                    <label> О себе:</label>
+                                    {{ user_bio_form.bio }}
+                                </div>
+
+                                <div class="form-group">
+                                    <button class="btn btn-success">Сохранить изменения</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="container mt-5">
+        <h2 style="text-align: center;"> Мои отзывы </h2>
+
+        <form class="form-search-reviews" method="get">
+            <div style="display: flex; align-items: center; ">
+                {{ search_form.search_word }}
+                <button class="btn btn-success" style="text-color: white;">Поиск</button>
+            </div>
+        </form>
+
+        <ul style="list-style-type: none;">
+            {% if user_reviews %}
+            {% for review in user_reviews %}
+                <li>
+                    UID: {{ review.id }}
+                </li>
+                <li>
+                    Устройство:
+                    <a href="{% url 'device_reviews' review.device.id %}">
+                        {{ review.device.name }}
+                    </a>
+                </li>
+                <li>
+                    Содержание отзыва: {{ review.content }}
+                </li>
+                <li>
+                    <p>Рейтинг: {{ review.rating }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>Вы еще не оставляли отзывы на устройства.</p>
+        {% endif %}
+
+        {% if search_word %}
+        <h3>Результаты поиска по слову "{{ search_word }}":</h3>
+        <ul>
+            {% for review in user_reviews %}
+                {# Ваш код для отображения результатов поиска #}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
+</div>
+    <script>
+        var csrfTokenInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+        var csrfToken = csrfTokenInput ? csrfTokenInput.value : null;
+        console.log(csrfToken)
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
